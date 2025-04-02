@@ -67,6 +67,15 @@ public class application {
 		 * 2ª - ruim - método retornando string
 		 * 3ª - boa - tratamento de exceções
 		 * */
+		
+		/*
+		 * A versão passada era com uma correção muito ruim, porque a lógica de validação da reserva nós colocamos no programa principal
+		 * e não na reserva. Problema grave de delegação.
+		 * Quem é responsável de saber sobre a reserva é a própria reserva, e não outra classe
+		 * 
+		 * Agora faremos a resolução 2, que seria a ruim. Vamos delegar a lógica de validação para a classe "reserva". E a operação
+		 * da classe reserva, quando ocorrer um erro, ela vai retornar um string com a mensagem de erro.
+		 * */
 
 		Scanner sc = new Scanner(System.in);
 
@@ -79,6 +88,12 @@ public class application {
 		System.out.printf("Check-out date (dd/MM/yyyy): ");
 		Date checkOut = sdf.parse(sc.next());
 
+		
+		/*
+		 * Ainda temos um pequeno problema aqui, temos uma validação feita no programa principal, que é na hora de instanciar o objeto
+		 * Por enquanto ainda não dá pra tirar, ela deveria ser uma validação no construtor, e não tem como botar ele para retornar String.
+		 * */
+		
 		if (!checkOut.after(checkIn)) {
 			System.out.println("Error in reservation: Check-out date must be after check-in date");
 		} else {
@@ -91,18 +106,14 @@ public class application {
 			checkIn = sdf.parse(sc.next()); // Entra a data como texto e SimpleDateFormat converte em um Date.
 			System.out.printf("Check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(sc.next());
-
-			Date now = new Date();
-
-			if (checkIn.before(now) || checkOut.before(now)) {
-				System.out.println("Error in reservation: Reservation dates for update must be future dates");
-			} else if (!checkOut.after(checkIn)) {
-				System.out.println("Error in reservation: Check-out date must be after check-in date");
+			
+			String error = reservation.updateDates(checkIn, checkOut); // O método agora retorna um String, por isso a String error
+			
+			if (error != null) {
+				System.out.println("Error in reservation: " + error);
 			} else {
-				reservation.updateDates(checkIn, checkOut);
 				System.out.println("Reservation: " + reservation);
 			}
-
 		}
 
 		sc.close();
