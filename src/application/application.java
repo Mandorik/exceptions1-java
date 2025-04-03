@@ -9,7 +9,9 @@ import model.entities.Reservation;
 
 public class application {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
+		// Não mais throws ParseException porque ela será tratada, não propagada
+		
 		// Problema exemplo
 		
 		/*
@@ -81,25 +83,24 @@ public class application {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		System.out.printf("Room number: ");
-		int roomNumber = sc.nextInt();
-		System.out.printf("Check-in date (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(sc.next()); // Entra a data como texto e SimpleDateFormat converte em um Date.
-		System.out.printf("Check-out date (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(sc.next());
-
-		
-		/*
-		 * Ainda temos um pequeno problema aqui, temos uma validação feita no programa principal, que é na hora de instanciar o objeto
-		 * Por enquanto ainda não dá pra tirar, ela deveria ser uma validação no construtor, e não tem como botar ele para retornar String.
-		 * */
-		
-		if (!checkOut.after(checkIn)) {
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		} else {
+		try { 
+			System.out.printf("Room number: ");
+			int roomNumber = sc.nextInt();
+			System.out.printf("Check-in date (dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(sc.next()); // Entra a data como texto e SimpleDateFormat converte em um Date.
+			System.out.printf("Check-out date (dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(sc.next());
+	
+			/*
+			 * Ainda temos um pequeno problema aqui, temos uma validação feita no programa principal, que é na hora de instanciar o objeto
+			 * Por enquanto ainda não dá pra tirar, ela deveria ser uma validação no construtor, e não tem como botar ele para retornar String.
+			 * */
+			
+			// Agora com a solução boa, vamos eliminar a gambiarra da String error, bem como if else com if else depois.	
+	
 			Reservation reservation = new Reservation(roomNumber, checkIn, checkOut);
 			System.out.println("Reservation: " + reservation);
-
+	
 			System.out.println();
 			System.out.println("Enter data to update the reservation:");
 			System.out.printf("Check-in date (dd/MM/yyyy): ");
@@ -107,15 +108,16 @@ public class application {
 			System.out.printf("Check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(sc.next());
 			
-			String error = reservation.updateDates(checkIn, checkOut); // O método agora retorna um String, por isso a String error
-			
-			if (error != null) {
-				System.out.println("Error in reservation: " + error);
-			} else {
-				System.out.println("Reservation: " + reservation);
-			}
+			reservation.updateDates(checkIn, checkOut);
+			System.out.println("Reservation: " + reservation);
 		}
-
+		catch (ParseException e) {  // Podemos por o ParseException na hora de converter a data
+			System.out.println("Invalid date format");
+		} // Agora novo bloco capturando o erro presente no Reservation.java
+		catch (IllegalArgumentException e) {
+			System.out.println("Error in reservation: " + e.getMessage()); // Message é a mensagem que foi passada na hora de instanciar exceção
+		}
+		
 		sc.close();
 		
 	}

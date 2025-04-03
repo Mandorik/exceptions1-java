@@ -39,18 +39,18 @@ public class Reservation {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public String updateDates(Date checkIn, Date checkOut) {
+	public void updateDates(Date checkIn, Date checkOut) { // Volta a ser void
 		Date now = new Date();
 
 		if (checkIn.before(now) || checkOut.before(now)) {
-			return "Reservation dates for update must be future dates";
+			// IllegalArgumentException usamos quando os argumentos passados são inválidos
+			throw new IllegalArgumentException("Reservation dates for update must be future dates"); // coloca throw e instancia uma exceção
 		} 
 		if (!checkOut.after(checkIn)) {
-			return "Check-out date must be after check-in date";
+			throw new IllegalArgumentException("Check-out date must be after check-in date");
 		} 
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		return null; // Critério se a operação não deu erro
 	}
 	
 	@Override
