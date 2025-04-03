@@ -8,7 +8,7 @@ import java.util.Scanner;
 import model.entities.Reservation;
 import model.exceptions.DomainException;
 
-public class application {
+public class Program {
 
 	public static void main(String[] args) {
 		// Não mais throws ParseException porque ela será tratada, não propagada
