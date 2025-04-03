@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
 public class application {
 
@@ -114,8 +115,11 @@ public class application {
 		catch (ParseException e) {  // Podemos por o ParseException na hora de converter a data
 			System.out.println("Invalid date format");
 		} // Agora novo bloco capturando o erro presente no Reservation.java
-		catch (IllegalArgumentException e) {
+		catch (DomainException e) {
 			System.out.println("Error in reservation: " + e.getMessage()); // Message é a mensagem que foi passada na hora de instanciar exceção
+		}
+		catch(RuntimeException e) { // Catch com tipo de exceção genérico, para que faça upcasting pra RuntimeException e mandar msg genérica
+			System.out.println("Unexpected error");
 		}
 		
 		sc.close();
